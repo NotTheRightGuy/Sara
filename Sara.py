@@ -1,8 +1,13 @@
 import sys
-import os
 from quotes import give_me_a_random_quote
 import pickle
 import time
+import mysql.connector
+from datetime import date
+from datetime import datetime
+import os
+import subprocess
+
 
 with open ('user_data.txt', 'r') as file:
     data = file.read()
@@ -18,11 +23,13 @@ if len(data) == 0:
     else:
         print("Invalid Response, Continuing anyway\n")
 
+#----------Asking user for information for first time usage-------------------
     print("\nWhat should I call you?")
     name = input(">>>")
+    name = name.title()
 
     print("\nHow old are you {}?".format(name))
-    age = input(">>>")
+    age = int(input(">>>"))
 
     print("\nWhen is your birthday {}?  #Enter in the form of dd/mm/yyyy".format(name))
     raw_bday =  input(">>>")
@@ -34,14 +41,26 @@ if len(data) == 0:
     print("\nIf you are on Instagram, what is your username?   #Feel free to skip if you don't want to.")
     insta_username = input(">>>")
 
-    print("In order to keep your journal writing safe, you will be asked to keep a username and password\n Please " +
-          "remember this in order to access the next time you open me. ")
-    journal_username = input("Enter your username\n>>>")
-    journal_password = input("Enter your password\n>>>")
+    print("\nQuick Question, do you MySQL installed               #If yes, the journals will be saved in the database")
+    my_sql_installed = input(">>>")
+
+    if my_sql_installed.lower() == 'y' or 'yes':
+        my_sql_installed = True
+    else:
+        my_sql_installed = False
+    if my_sql_installed:
+        print("What's your MySQL connector password:             #This will be used to connect to MySQL Database")
+        mysql_password = input(">>>")
+    clear()
+    print("In order to keep your journal writing safe, you will be asked to keep a username and password\nPlease " +
+          "remember this in order to access journal the next time you open me.\n ")
+    journal_username = input("Enter your username:\n>>>")
+    journal_password = input("Enter your password:\n>>>")
     print("username and password set. Always remember this or else we have to reset back")
 
     dict_to_write = {"Name":name,"Age":int(age),"Birthday Day": b_day,"Birthday Month":b_month ,"Birthday Year":b_year ,
-                     "Instagram username": insta_username,"username":journal_username,"password":journal_password}
+                     "Instagram username": insta_username,"username":journal_username,"password":journal_password,
+                     'mysql_password':mysql_password}
 
     with open('user_data.txt','wb') as file:
         pickle.dump(dict_to_write,file)
@@ -63,25 +82,27 @@ if len(data) == 0:
     So let's get started.
     """.format(name))
 
+#-----------------------End of requesting user Information----------------------------------------
 with open('user_data.txt','rb') as file:
     user_data = pickle.load(file)
 
-name = user_data['Name'] #Fetching User Name from user_data.txt
-age = user_data['Age']   #Fetching User age from user_data.txt
-b_day = user_data['Birthday Day'] #------------do-----------
-b_month = user_data['Birthday Month'] #--------do-----------
-b_year = user_data ['Birthday Year'] #---------do-----------
-username = user_data['username']
-password = user_data['password']
+real_username = user_data['username']
+real_password = user_data['password']
 
 print("Please enter your credentials to move ahead")
 username_given = input("Username: ")
 password_given = input("Password: ")
-if username_given == username and password_given == password:
+if username_given == real_username and password_given == real_password:
     print("Login Successful")
     time.sleep(2)
     clear()
     print("So What would you like to do today? ")
+
+    name = user_data['Name']  # Fetching User Name from user_data.txt
+    age = user_data['Age']  # Fetching User age from user_data.txt
+    b_day = user_data['Birthday Day']  # ------------do-----------
+    b_month = user_data['Birthday Month']  # --------do-----------
+    b_year = user_data['Birthday Year']
 
     while True:
         print("Enter 1 to write your day's experience. ")
@@ -94,7 +115,43 @@ if username_given == username and password_given == password:
         print("----------------Quote of the Day---------------")
         print(quote)
         print('-----------------------------------------------')
+        print("How are you feeling right now: ")
+        mood = input(">>>")
+
+        try:
+            my_password = user_data['mysql_password']
+            print("\nConnecting to MySQL database using the given password")
+            mydb = mysql.connector.connect(
+                host = "localhost",
+                user = 'root',
+                password = mysql_password
+            )
+            if mydb.is_connected():
+                print("Successfully connected")
+            mycursor = mydb.cursor()
+            #TODO: Implement the journal system to use the MySQL Database
+        except KeyError:
+            print("Using Local Machine to save your journal")
+            os.chdir('journals')
+            today = date.today()
+            today = today.strftime("%d%m%Y")
+            today_for_use = str(today)
+            now = datetime.now()
+            current_time = now.strftime("%S:%M:%H")
+            current_time_use = str(current_time)
+            try:
+                os.mkdir(today_for_use)
+            except:
+                pass
+            os.chdir(today_for_use)
+            with open(current_time_use+'.txt','w') as file:
+                to_write = "Current Mood : {}".format(mood)+ "Date: {}".format(today) +"Time: {}".format(current_time) + "\n>"
+                file.write(to_write)
+            subprocess.Popen(["notepad.exe",current_time])
+        print("Returning back to main Menu")
+        time.sleep(1)
+        clear()
 else:
     print("Invalid Credentials, exiting now")
-    time.sleep(4)
+    time.sleep(2)
     sys.exit()
