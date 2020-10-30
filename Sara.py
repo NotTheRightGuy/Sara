@@ -2,6 +2,7 @@ import sys
 import os
 from quotes import give_me_a_random_quote
 import pickle
+import time
 
 with open ('user_data.txt', 'r') as file:
     data = file.read()
@@ -33,7 +34,14 @@ if len(data) == 0:
     print("\nIf you are on Instagram, what is your username?   #Feel free to skip if you don't want to.")
     insta_username = input(">>>")
 
-    dict_to_write = {"Name":name,"Age":int(age),"Birthday Day": b_day,"Birthday Month":b_month ,"Birthday Year":b_year ,"Instagram username": insta_username}
+    print("In order to keep your journal writing safe, you will be asked to keep a username and password\n Please " +
+          "remember this in order to access the next time you open me. ")
+    journal_username = input("Enter your username\n>>>")
+    journal_password = input("Enter your password\n>>>")
+    print("username and password set. Always remember this or else we have to reset back")
+
+    dict_to_write = {"Name":name,"Age":int(age),"Birthday Day": b_day,"Birthday Month":b_month ,"Birthday Year":b_year ,
+                     "Instagram username": insta_username,"username":journal_username,"password":journal_password}
 
     with open('user_data.txt','wb') as file:
         pickle.dump(dict_to_write,file)
@@ -41,16 +49,17 @@ if len(data) == 0:
     clear()
 
     print("""
-    Hi {}, I'm Sara and I will be your assistant on this journey called life. I'm not that much useful at this moment
-    and my developers are still working on me to implement more and more features everyday.
+    Hi {}, I'm Sara and I will be your assistant on this journey called life. I'm not that much useful 
+    at this moment and my developers are still working on me to implement more and more features everyday.
+    At my current stage of working I can just be used to monitor your everyday routine and help give you
+    advice to improve it.
     
-    At my current stage of working I can just be used to monitor your everyday routine and help give you advice to improve
-    it.
+    I can be used as journal and you can tell me everything you have to tell me. Think of me as your best
+    friend. I might not be as special as you, but I  will be glad to be your friend.
     
-    I can be used as journal and you can tell me everything you have to tell me. Think of me as your best friend.
-    I might not be as special as you, but I  will be glad to be your friend.
+    Everything you will be telling me will be saved in your local machine so no one else will be knowing 
+    your secrets ;)
     
-    Everything you will be telling me will be saved in your local machine so no one else will be knowing your secrets ;)
     So let's get started.
     """.format(name))
 
@@ -62,19 +71,30 @@ age = user_data['Age']   #Fetching User age from user_data.txt
 b_day = user_data['Birthday Day'] #------------do-----------
 b_month = user_data['Birthday Month'] #--------do-----------
 b_year = user_data ['Birthday Year'] #---------do-----------
+username = user_data['username']
+password = user_data['password']
 
+print("Please enter your credentials to move ahead")
+username_given = input("Username: ")
+password_given = input("Password: ")
+if username_given == username and password_given == password:
+    print("Login Successful")
+    time.sleep(2)
+    clear()
+    print("So What would you like to do today? ")
 
-print("So What would you like to do today? ")
+    while True:
+        print("Enter 1 to write your day's experience. ")
+        #TODO: To Implement more features here
+        response = input(">>>")
 
-while True:
-    print("Enter 1 to write your day's experience. ")
-    #TODO: To Implement more features here
-    response = input(">>>")
-
-    if response == '1':
-        clear()
-    quote = give_me_a_random_quote()
-    print("Quote of the Day")
-    print(quote)
-    print("So what do you have to tell me {}".format(name))
-    input(">>>")
+        if response == '1':
+            clear()
+        quote = give_me_a_random_quote()
+        print("----------------Quote of the Day---------------")
+        print(quote)
+        print('-----------------------------------------------')
+else:
+    print("Invalid Credentials, exiting now")
+    time.sleep(4)
+    sys.exit()
