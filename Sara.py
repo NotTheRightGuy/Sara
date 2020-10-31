@@ -8,9 +8,9 @@ import os
 import subprocess
 import shutil
 import webbrowser
+from googlesearch import search
 
-
-with open ('user_data.cd', 'rb') as file:
+with open('user_data.cd', 'rb') as file:
     data = file.read()
 
 clear = lambda : os.system('cls')
@@ -110,6 +110,7 @@ if username_given == real_username and password_given == real_password:
         print("Enter 1 for your Journal")
         print("Enter 2 for some lofi songs(Can help you concentrate)")
         print("Enter 3 to keep a tab on your friends birthday (Can save your friendship)")
+        print("Enter 4 to search for a question on google")
         #TODO: A minimal google Search
         #TODO: Suggest a song
         #TODO: Solving a problem???
@@ -229,6 +230,16 @@ if username_given == real_username and password_given == real_password:
                     pickle.dump(empty_dict,file)
                 print("Deleted all records")
                 time.sleep(2)
+
+        elif response == '4':
+            print("So what would you like to search: ")
+            query = input(">>>")
+            first_website = list(search(query, tld ='co.in', num=1, stop=1, pause=1))[0]
+            print("Redirecting you to the first website on google search")
+            webbrowser.open(first_website)
+            time.sleep(5)
+
+
 
         print("Returning back to main Menu")
         time.sleep(1)
