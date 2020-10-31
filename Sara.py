@@ -111,7 +111,6 @@ if username_given == real_username and password_given == real_password:
         print("Enter 2 for some lofi songs(Can help you concentrate)")
         print("Enter 3 to keep a tab on your friends birthday (Can save your friendship)")
         print("Enter 4 to search for a question on google")
-        #TODO: A minimal google Search
         #TODO: Suggest a song
         #TODO: Solving a problem???
         response = input(">>>")
