@@ -7,13 +7,17 @@ import datetime
 import os
 import subprocess
 import shutil
+import webbrowser
 
 
-with open ('user_data.txt', 'r') as file:
+with open ('user_data.cd', 'rb') as file:
     data = file.read()
 
 clear = lambda : os.system('cls')
 if len(data) == 0:
+    with open('bdays.cd', 'wb') as file:
+        di = {}
+        pickle.dump(di, file)
     print("Before we start I would like to know you, press 'Y' if you want to continue, or 'Q' to end")
     first_response = input(">>>")
     if first_response.lower() == "y":
@@ -49,7 +53,7 @@ if len(data) == 0:
     dict_to_write = {"Name":name,"Birthday Day": b_day,"Birthday Month":b_month ,"Birthday Year":b_year ,
                      "Instagram username": insta_username,"username":journal_username,"password":journal_password}
 
-    with open('user_data.txt','wb') as file:
+    with open('user_data.cd','wb') as file:
         pickle.dump(dict_to_write,file)
 
     clear()
@@ -72,8 +76,7 @@ if len(data) == 0:
 #-----------------------End of requesting user Information----------------------------------------
 
 
-
-with open('user_data.txt','rb') as file:
+with open('user_data.cd','rb') as file:
     user_data = pickle.load(file)
 
 real_username = user_data['username']
@@ -86,7 +89,6 @@ if username_given == real_username and password_given == real_password:
     print("Login Successful")
 
     name = user_data['Name']
-    age = user_data['Age']
     b_day = user_data['Birthday Day']
     b_month = user_data['Birthday Month']
     b_year = user_data['Birthday Year']
@@ -106,11 +108,10 @@ if username_given == real_username and password_given == real_password:
 
     while True:
         print("Enter 1 for your Journal")
-        #TODO: To Implement more features here
-        #TODO: A memo to remember your friends birthday
+        print("Enter 2 for some lofi songs(Can help you concentrate)")
+        print("Enter 3 to keep a tab on your friends birthday (Can save your friendship)")
         #TODO: A minimal google Search
         #TODO: Suggest a song
-        #TODO: Link to Lofi Stream
         #TODO: Solving a problem???
         response = input(">>>")
 
@@ -147,7 +148,7 @@ if username_given == real_username and password_given == real_password:
                     file.write("\n")
                     file.write(to_write_time)
                     file.write("\n>")
-
+                #TODO: Let the user access and see their journal entry
                 subprocess.Popen(["notepad.exe",current_time_use])
             elif response_for_journal == '3':
                 print("Deleting all the journal records")
@@ -155,10 +156,84 @@ if username_given == real_username and password_given == real_password:
                 for folder in os.listdir():
                     shutil.rmtree(folder)
                 time.sleep(2)
+                clear()
+
+        elif response == '2':
+            print("Redirecting to Youtube LoFi Stream")
+            time.sleep(1)
+            webbrowser.open("https://www.youtube.com/watch?v=5qap5aO4i9A")
+            clear()
+
+        elif response == '3':
+            print("Enter 1 to add an entry")
+            print("Enter 2 to see all the entry")
+            print("Enter 3 to delete someone's entry")
+            print("Enter 4 to delete all the entries")
+
+            bday_response = input("\n>>>")
+            if bday_response == '1':
+                with open('bdays.cd','rb') as file:
+                    to_write = pickle.load(file)
+
+                to_add= True
+                while to_add:
+                    name = input("Name: ")
+                    bday = input("Birthday: ")
+                    to_write.update({name:bday})
+                    with open('bdays.cd','wb') as file:
+                        pickle.dump(to_write,file)
+                    print("You wanna continue adding?   #Y for yes and N for no")
+
+                    response = input(">>>")
+                    if response.lower() == 'y':
+                        to_add = True
+                    elif response.lower() == 'n':
+                        to_add = False
+                    else:
+                        print("Invalid respone")
+                        time.sleep(1)
+            elif bday_response == '2':
+                with open('bdays.cd','rb') as file:
+                    bday_dict = pickle.load(file)
+
+                name_list = list(bday_dict.keys())
+                bday_list = list(bday_dict.values())
+
+                for i in range(len(name_list)):
+                    print("{} : {}".format(name_list[i],bday_list[i]))
+
+                response = input("Press any key to return to main menu\n>>>")
+
+            elif bday_response == '3':
+                cont = True
+                while cont:
+                    name = input("Whose record would you like to delete(Case sensitive): ")
+                    print("Record Successfully deleted")
+                    with open('bdays.cd','rb') as file:
+                        bday = pickle.load(file)
+                    del bday[name]
+                    with open('bdays.cd','wb') as file:
+                        pickle.dump(bday,file)
+                    print("Do you wanna continue deleting?           #Y for yes, N for no")
+                    response = input(">>>")
+                    if response.lower() == 'y':
+                        continue
+                    elif response.lower() == 'n':
+                        cont = False
+                    else:
+                        print("Invalid Response")
+
+            elif bday_response == '4':
+                with open("bdays.cd",'wb') as file:
+                    empty_dict = {}
+                    pickle.dump(empty_dict,file)
+                print("Deleted all records")
+                time.sleep(2)
 
         print("Returning back to main Menu")
         time.sleep(1)
         clear()
+        continue
 
 else: #The Else command if the user fails to provide the right password
     print("Invalid Credentials, exiting now")
