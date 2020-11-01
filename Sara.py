@@ -9,6 +9,8 @@ import subprocess
 import shutil
 import webbrowser
 from googlesearch import search
+from random_songs import give_me_random_song
+from find_youtube import findYT
 
 with open('user_data.cd', 'rb') as file:
     data = file.read()
@@ -107,12 +109,15 @@ if username_given == real_username and password_given == real_password:
     print("So What would you like to do today? ")
 
     while True:
+
         print("Enter 1 for your Journal")
         print("Enter 2 for some lofi songs(Can help you concentrate)")
         print("Enter 3 to keep a tab on your friends birthday (Can save your friendship)")
         print("Enter 4 to search for a question on google")
-        #TODO: Suggest a song
-        #TODO: Solving a problem???
+        print("Enter 5 to search to search questions regarding your academics.")
+        print("Enter 6 to suggest a random song.")
+        print("Enter 0 to exit the program")
+
         response = input(">>>")
 
         if response == '1':
@@ -238,12 +243,42 @@ if username_given == real_username and password_given == real_password:
             webbrowser.open(first_website)
             time.sleep(5)
 
+        elif response == '5':
+            print("Opening Wolfram Alpha")
+            time.sleep(1)
+            print("Wolfram Alpha is an AI tool which can be used to solve any problems regarding your academics.")
+            time.sleep(2)
+            webbrowser.open('www.wolframalpha.com')
 
+        elif response == '6':
+            print("You can add your own songs by editing the songs.txt in the directory or remove those you don' want")
+            time.sleep(2)
+            clear()
+            song = give_me_random_song()
+            print(song)
+            print("Do you want me to open the song on youtube?      #Y for yes and N for no")
+            response = input(">>>")
+            if response.lower() == 'y':
+                print("Opening Song on YouTube")
+                findYT(song)
+            elif response.lower() == 'n':
+                pass
+            else:
+                print("Invalid Respone")
+                time.sleep(1)
+
+
+        elif response == '0':
+            print("Exiting the program")
+            time.sleep(1)
+            break
 
         print("Returning back to main Menu")
         time.sleep(1)
         clear()
         continue
+
+#TODO : Encrypt the Journal entry once the user quit the program.
 
 else: #The Else command if the user fails to provide the right password
     print("Invalid Credentials, exiting now")
