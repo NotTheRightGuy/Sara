@@ -19,7 +19,6 @@ with open('user_data.cd', 'rb') as file:
 
 clear = lambda : os.system('cls')
 if len(data) == 0:
-    encryption.encrypt()
     with open('bdays.cd', 'wb') as file:
         di = {}
         pickle.dump(di, file)
@@ -91,8 +90,10 @@ username_given = input("Username: ")
 password_given = input("Password: ")
 if username_given == real_username and password_given == real_password:
     print("Login Successful")
-    encryption.decrypt()
-
+    try:
+        encryption.decrypt()
+    except:     #Might Cause some problems
+        pass
 
     name = user_data['Name']
     b_day = user_data['Birthday Day']
@@ -348,10 +349,13 @@ if username_given == real_username and password_given == real_password:
         time.sleep(1)
         clear()
         continue
+    try:
+        encryption.encrypt()
+    except:        #Look into this might cause problems in the future.
+        pass
 
 else: #The Else command if the user fails to provide the right password
     print("Invalid Credentials, exiting now")
     time.sleep(2)
     sys.exit()
 
-encryption.encrypt()
