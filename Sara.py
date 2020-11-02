@@ -90,9 +90,13 @@ username_given = input("Username: ")
 password_given = input("Password: ")
 if username_given == real_username and password_given == real_password:
     print("Login Successful")
+    # try:
+    #     encryption.decrypt()
+    # except:     #Might Cause some problems
+    #
     try:
         encryption.decrypt()
-    except:     #Might Cause some problems
+    except pickle.UnpicklingError:
         pass
 
     name = user_data['Name']
@@ -349,11 +353,11 @@ if username_given == real_username and password_given == real_password:
         time.sleep(1)
         clear()
         continue
-    try:
-        encryption.encrypt()
-    except:        #Look into this might cause problems in the future.
-        pass
-
+    # try:
+    #     encryption.encrypt()
+    # except:        #Look into this might cause problems in the future.
+    #     pass
+    encryption.encrypt()
 else: #The Else command if the user fails to provide the right password
     print("Invalid Credentials, exiting now")
     time.sleep(2)
