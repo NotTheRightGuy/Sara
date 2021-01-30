@@ -1,6 +1,4 @@
 import sys
-from quotes import give_me_a_random_quote
-from quotes import quote_decorator
 import pickle
 import time
 import datetime
@@ -11,7 +9,9 @@ import webbrowser
 from googlesearch import search
 from random_songs import give_me_random_song
 from find_youtube import findYT
-import encryption
+from quotes import give_me_a_random_quote
+from quotes import quote_decorator
+
 
 cwd = os.getcwd()
 with open('user_data.cd', 'rb') as file:
@@ -90,15 +90,7 @@ username_given = input("Username: ")
 password_given = input("Password: ")
 if username_given == real_username and password_given == real_password:
     print("Login Successful")
-    # try:
-    #     encryption.decrypt()
-    # except:     #Might Cause some problems
-    #
-    try:
-        encryption.decrypt()
-    except pickle.UnpicklingError:
-        pass
-
+    
     name = user_data['Name']
     b_day = user_data['Birthday Day']
     b_month = user_data['Birthday Month']
@@ -226,6 +218,7 @@ if username_given == real_username and password_given == real_password:
                 os.chdir(cwd)
 
             elif response_for_journal == '3':
+                os.chdir(cwd)
                 print("Deleting all the journal records")
                 os.chdir('journals')
                 for folder in os.listdir():
@@ -241,6 +234,7 @@ if username_given == real_username and password_given == real_password:
             clear()
 
         elif response == '3':
+            os.chdir(cwd)
             print("Enter 1 to add an entry")
             print("Enter 2 to see all the entry")
             print("Enter 3 to delete someone's entry")
@@ -353,11 +347,7 @@ if username_given == real_username and password_given == real_password:
         time.sleep(1)
         clear()
         continue
-    # try:
-    #     encryption.encrypt()
-    # except:        #Look into this might cause problems in the future.
-    #     pass
-    encryption.encrypt()
+    
 else: #The Else command if the user fails to provide the right password
     print("Invalid Credentials, exiting now")
     time.sleep(2)

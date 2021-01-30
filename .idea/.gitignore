@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+#Ignore __pycache__
+__pycache
+
+#Ignore Google Cookies 
+.google-cookie
+
+#Ignore .idea
+.idea

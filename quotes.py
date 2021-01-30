@@ -5,12 +5,12 @@ import random
 
 def give_me_a_random_quote():
     """
-
     :return: A random quote of the day from internet
     """
+ 
     url = 'https://www.brainyquote.com/quote_of_the_day'
     website = requests.get(url)
-    soup = BeautifulSoup(website.text, 'lxml')
+    soup = BeautifulSoup(website.text,'lxml')
 
     quotes = soup.findAll('div', class_='clearfix')
 
@@ -33,3 +33,4 @@ def quote_decorator(quote, author):
     print(quote)
     print(author.center(16 + (cs * 2)))
     print("=" * cs, "=" * 16, "=" * cs)
+
